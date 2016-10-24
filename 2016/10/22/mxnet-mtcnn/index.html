@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.0.2" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="test," />
+  <meta name="keywords" content="dl,mxnet,face," />
 
 
 
@@ -84,19 +84,27 @@
 
 
 
-<meta name="description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub.
-Quick">
+<meta name="description" content="处理人脸的时候，一直都希望有一个比较快而且又准的方法，这次看到mtcnn放出的模型，稍微试了几下感觉效果不错，就把模型转到了mxnet下，语言也换成了python，方便使用，记录一些转换的过程供以后参考。
+1 论文相关  作者的官方实现以及作者的官网。
+
+这个方法最大的好处当然是快了(在很准的前提下)，可以对比用mxnet实现的faster rcnn实现的人脸检测，速度还是要慢很多的，当然本来">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Hello World">
-<meta property="og:url" content="http://yoursite.com/2016/10/11/hello-world/index.html">
+<meta property="og:title" content="mxnet 实现 mtcnn 人脸检测和特征点定位">
+<meta property="og:url" content="http://yoursite.com/2016/10/22/mxnet-mtcnn/index.html">
 <meta property="og:site_name" content="笨狗笔记">
-<meta property="og:description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub.
-Quick">
-<meta property="og:updated_time" content="2016-10-11T05:03:16.000Z">
+<meta property="og:description" content="处理人脸的时候，一直都希望有一个比较快而且又准的方法，这次看到mtcnn放出的模型，稍微试了几下感觉效果不错，就把模型转到了mxnet下，语言也换成了python，方便使用，记录一些转换的过程供以后参考。
+1 论文相关  作者的官方实现以及作者的官网。
+
+这个方法最大的好处当然是快了(在很准的前提下)，可以对比用mxnet实现的faster rcnn实现的人脸检测，速度还是要慢很多的，当然本来">
+<meta property="og:image" content="http://7xsc78.com1.z0.glb.clouddn.com/face_mtcnn.png">
+<meta property="og:updated_time" content="2016-10-23T05:35:56.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Hello World">
-<meta name="twitter:description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub.
-Quick">
+<meta name="twitter:title" content="mxnet 实现 mtcnn 人脸检测和特征点定位">
+<meta name="twitter:description" content="处理人脸的时候，一直都希望有一个比较快而且又准的方法，这次看到mtcnn放出的模型，稍微试了几下感觉效果不错，就把模型转到了mxnet下，语言也换成了python，方便使用，记录一些转换的过程供以后参考。
+1 论文相关  作者的官方实现以及作者的官网。
+
+这个方法最大的好处当然是快了(在很准的前提下)，可以对比用mxnet实现的faster rcnn实现的人脸检测，速度还是要慢很多的，当然本来">
+<meta name="twitter:image" content="http://7xsc78.com1.z0.glb.clouddn.com/face_mtcnn.png">
 
 
 
@@ -117,10 +125,10 @@ Quick">
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2016/10/11/hello-world/"/>
+  <link rel="canonical" href="http://yoursite.com/2016/10/22/mxnet-mtcnn/"/>
 
 
-  <title> Hello World | 笨狗笔记 </title>
+  <title> mxnet 实现 mtcnn 人脸检测和特征点定位 | 笨狗笔记 </title>
 </head>
 
 <body itemscope itemtype="//schema.org/WebPage" lang="zh-Hans">
@@ -250,7 +258,7 @@ Quick">
             
             
               
-                Hello World
+                mxnet 实现 mtcnn 人脸检测和特征点定位
               
             
           </h1>
@@ -262,8 +270,8 @@ Quick">
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-10-11T13:03:16+08:00" content="2016-10-11">
-              2016-10-11
+            <time itemprop="dateCreated" datetime="2016-10-22T19:23:37+08:00" content="2016-10-22">
+              2016-10-22
             </time>
           </span>
 
@@ -276,8 +284,8 @@ Quick">
               <span class="post-meta-item-text">分类于</span>
               
                 <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/test/" itemprop="url" rel="index">
-                    <span itemprop="name">test</span>
+                  <a href="/categories/study/" itemprop="url" rel="index">
+                    <span itemprop="name">study</span>
                   </a>
                 </span>
 
@@ -292,8 +300,8 @@ Quick">
             
               <span class="post-comments-count">
                 &nbsp; | &nbsp;
-                <a href="/2016/10/11/hello-world/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/10/11/hello-world/" itemprop="commentsCount"></span>
+                <a href="/2016/10/22/mxnet-mtcnn/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/10/22/mxnet-mtcnn/" itemprop="commentsCount"></span>
                 </a>
               </span>
             
@@ -316,15 +324,32 @@ Quick">
       
 
       
-        <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="external">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="external">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="external">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo new <span class="string">"My New Post"</span></div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="external">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo server</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="external">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo generate</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="external">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo deploy</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="external">Deployment</a></p>
+        <p>  处理人脸的时候，一直都希望有一个比较快而且又准的方法，这次看到mtcnn放出的模型，稍微试了几下感觉效果不错，就把模型转到了mxnet下，语言也换成了python，方便使用，记录一些转换的过程供以后参考。</p>
+<h2 id="1-论文相关"><a href="#1-论文相关" class="headerlink" title="1 论文相关"></a>1 论文相关</h2><p>  作者的<a href="https://github.com/kpzhang93/MTCNN_face_detection_alignment" target="_blank" rel="external">官方实现</a>以及作者的<a href="https://kpzhang93.github.io/" target="_blank" rel="external">官网</a>。</p>
+<ul>
+<li><p>这个方法最大的好处当然是快了(在很准的前提下)，可以对比用mxnet实现的faster rcnn实现的<a href="https://github.com/tornadomeet/mxnet-face" target="_blank" rel="external">人脸检测</a>，速度还是要慢很多的，当然本来faster rcnn就是奔着通用的检测方案去的，用在这里有点大材小用。</p>
+</li>
+<li><p>提速的最大来源还是和cascade一样的思路，用简单的分类器去掉大量的明显非人脸区域，再用逐渐复杂的分类器过滤余下的检测框。不过放弃了rpn对尺度不敏感的性质，也就意味着要生成图像金字塔，这里也是一比不小的开销。</p>
+</li>
+<li><p>只在最后的stage里做landmark的预测，既是节省时间，也是因为前面的人脸框本身就定位不准，那么做landmark噪声太大。</p>
+<p>其它的信息参见论文，没有太多好说的。</p>
+</li>
+</ul>
+<h2 id="2-模型转换"><a href="#2-模型转换" class="headerlink" title="2 模型转换"></a>2 模型转换</h2><p>  看了论文之后感觉还是挺简单的，没有对network做什么hack，应该都是现成的模块可以搞定的事情，中间逻辑也不复杂，没想到还是挺多需要注意的事情的。</p>
+<ul>
+<li><p>都知道caffe因为使用opencv处理图片的缘故，一般训练出来的模型是读取BGR图像的，而mxnet是约定是RGB的。well，这次反过来了。作者由于是提供的matlab的代码，而matlab本身是RGB排列的，我观察到作者没有更换通道，那么这个模型其实是读取RGB的输入了。另一方面，由于skimage的resize速度没有opencv快，我希望使用opencv做image的io和resize，那么处于效率考虑当然最好用BGR输入。所以弄了一圈还是需要交换一次第一层conv的权重通道。</p>
+</li>
+<li><p>好久没用matlab的我，依稀记得matlab是列优先的内存存放。所以我看到作者直接把图片丢进去的时候一阵的莫名其妙，直到看到作者对x,y坐标的交换操作才明白。原来作者为了效率优先，就没有对内存做过多的修改，这样送给caffe相当于是在检测一张转置后的图像(不知道作者是训练的时候就交换了，还是发布模型的时候转置了权重，只是因为使用matlab就需要这么个额外的步骤，我再强烈安利一发mxnet啊)。那numpy以行为主，我们要拿到合理的输出，当然就是转置权重了。不过注意是在最后的x，y层面才转置，channel和num是要维持不动的。</p>
+</li>
+<li><p>经过上面的操作后，我们得到的feature map是转置后的，那么fc的连接也被我们也需要做对应的修改。如果feature map从<br>$$<br>\begin{vmatrix} 0 &amp; 3 \\ 1 &amp; 4 \\ 2 &amp; 5  \end{vmatrix}<br>$$<br>变成了<br>$$<br>\begin{vmatrix}0 &amp; 1 &amp; 2 \\ 3 &amp; 4 &amp;5  \end{vmatrix}<br>$$<br>​</p>
+<p>fc不考虑它们的摆放关系，所以第一个变成了012345，而第二个的内存顺序是 031425，所以我们想要拿到同样的输出的时候，要把fc的权重也做这样的修改。其实也就是reshape回输出时候的<code>(c, h, w)</code>的shape，然后对后面两个维度转置一下，再flatten回来就好了。</p>
+<p>经过上面这上个操作，最后检查一下。把x输入到caffe的model，和把x交换通道并且转置后输入到我们转换的mxnet的model，输出是不是一致的。其它一些需要注意的地方都是一些比较细节的玩意，好像matlab里面的1:4是包括4的，从1开始啊。总之太多约定上不一样的，小心一点就好。另外吐槽一下numpy的(n,)和(n,1)都不好用。</p>
+</li>
+</ul>
+<h2 id="结果"><a href="#结果" class="headerlink" title="结果"></a>结果</h2><p><img src="http://7xsc78.com1.z0.glb.clouddn.com/face_mtcnn.png" alt="big4"></p>
+<p>我大概检查了一下输出，和原版输出应该是差不多的撒，不过有时候浮点到整形之类的有一些些出入。</p>
+<p>不过去掉matlab和caffe的依赖，可以用python和mxnet来做，实用性还是方便很多的，欢迎大家使用嘿嘿，有问题欢迎留言。</p>
+<p><a href="https://github.com/pangyupo/mxnet_mtcnn_face_detection" target="_blank" rel="external">全部代码</a></p>
 
       
     </div>
@@ -347,7 +372,11 @@ Quick">
       
         <div class="post-tags">
           
-            <a href="/tags/test/" rel="tag">#test</a>
+            <a href="/tags/dl/" rel="tag">#dl</a>
+          
+            <a href="/tags/mxnet/" rel="tag">#mxnet</a>
+          
+            <a href="/tags/face/" rel="tag">#face</a>
           
         </div>
       
@@ -356,13 +385,13 @@ Quick">
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
+              <a href="/2016/10/16/mxnet-center-loss/" rel="next" title="mxnet_center_loss">
+                <i class="fa fa-chevron-left"></i> mxnet_center_loss
+              </a>
+            
           </div>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2016/10/16/mxnet-center-loss/" rel="prev" title="mxnet_center_loss">
-                mxnet_center_loss <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -377,10 +406,10 @@ Quick">
 
     <div class="post-spread">
       
-        <div class="ds-share flat" data-thread-key="2016/10/11/hello-world/"
-     data-title="Hello World"
+        <div class="ds-share flat" data-thread-key="2016/10/22/mxnet-mtcnn/"
+     data-title="mxnet 实现 mtcnn 人脸检测和特征点定位"
      data-content=""
-     data-url="http://yoursite.com/2016/10/11/hello-world/">
+     data-url="http://yoursite.com/2016/10/22/mxnet-mtcnn/">
   <div class="ds-share-inline">
     <ul  class="ds-share-icons-16">
 
@@ -407,8 +436,8 @@ Quick">
           
   <div class="comments" id="comments">
     
-      <div class="ds-thread" data-thread-key="2016/10/11/hello-world/"
-           data-title="Hello World" data-url="http://yoursite.com/2016/10/11/hello-world/">
+      <div class="ds-thread" data-thread-key="2016/10/22/mxnet-mtcnn/"
+           data-title="mxnet 实现 mtcnn 人脸检测和特征点定位" data-url="http://yoursite.com/2016/10/22/mxnet-mtcnn/">
       </div>
     
   </div>
@@ -519,7 +548,7 @@ Quick">
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Quick-Start"><span class="nav-number">1.</span> <span class="nav-text">Quick Start</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Create-a-new-post"><span class="nav-number">1.1.</span> <span class="nav-text">Create a new post</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Run-server"><span class="nav-number">1.2.</span> <span class="nav-text">Run server</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Generate-static-files"><span class="nav-number">1.3.</span> <span class="nav-text">Generate static files</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Deploy-to-remote-sites"><span class="nav-number">1.4.</span> <span class="nav-text">Deploy to remote sites</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-论文相关"><span class="nav-number">1.</span> <span class="nav-text">1 论文相关</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-模型转换"><span class="nav-number">2.</span> <span class="nav-text">2 模型转换</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#结果"><span class="nav-number">3.</span> <span class="nav-text">结果</span></a></li></ol></div>
             
           </div>
         </section>

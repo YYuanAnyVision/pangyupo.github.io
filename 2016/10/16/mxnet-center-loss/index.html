@@ -85,20 +85,20 @@
 
 
 <meta name="description" content="使用mxnet构造center loss operator(python版本)论文介绍  相关论文见《A Discriminative Feature Learning Approach for Deep Face Recognition》,Yandong Wen, Kaipeng Zhang, Zhifeng Li, and Yu Qiao, Shenzhen 
-  作者的出发点和contras">
+  更新作者官方放出的代码，基于">
 <meta property="og:type" content="article">
 <meta property="og:title" content="mxnet_center_loss">
 <meta property="og:url" content="http://yoursite.com/2016/10/16/mxnet-center-loss/index.html">
 <meta property="og:site_name" content="笨狗笔记">
 <meta property="og:description" content="使用mxnet构造center loss operator(python版本)论文介绍  相关论文见《A Discriminative Feature Learning Approach for Deep Face Recognition》,Yandong Wen, Kaipeng Zhang, Zhifeng Li, and Yu Qiao, Shenzhen 
-  作者的出发点和contras">
+  更新作者官方放出的代码，基于">
 <meta property="og:image" content="http://7xsc78.com1.z0.glb.clouddn.com/centerloss_example.jpg">
 <meta property="og:image" content="http://7xsc78.com1.z0.glb.clouddn.com/training_log.png">
-<meta property="og:updated_time" content="2016-10-16T09:09:26.000Z">
+<meta property="og:updated_time" content="2016-10-16T14:26:14.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="mxnet_center_loss">
 <meta name="twitter:description" content="使用mxnet构造center loss operator(python版本)论文介绍  相关论文见《A Discriminative Feature Learning Approach for Deep Face Recognition》,Yandong Wen, Kaipeng Zhang, Zhifeng Li, and Yu Qiao, Shenzhen 
-  作者的出发点和contras">
+  更新作者官方放出的代码，基于">
 <meta name="twitter:image" content="http://7xsc78.com1.z0.glb.clouddn.com/centerloss_example.jpg">
 
 
@@ -320,6 +320,7 @@
 
       
         <h1 id="使用mxnet构造center-loss-operator-python版本"><a href="#使用mxnet构造center-loss-operator-python版本" class="headerlink" title="使用mxnet构造center loss operator(python版本)"></a>使用mxnet构造center loss operator(python版本)</h1><h2 id="论文介绍"><a href="#论文介绍" class="headerlink" title="论文介绍"></a>论文介绍</h2><p>  相关论文见<a href="http://ydwen.github.io/papers/WenECCV16.pdf" target="_blank" rel="external"><em>《A Discriminative Feature Learning Approach for Deep Face Recognition》</em>,<em>Yandong Wen, Kaipeng Zhang, Zhifeng Li, and Yu Qiao, Shenzhen</em> </a></p>
+<p>  更新作者官方放出的<a href="https://github.com/ydwen/caffe-face" target="_blank" rel="external">代码</a>，基于caffe</p>
 <p>  作者的出发点和contrastive loss一样，在配合softmax适用的时候，希望使学习到的特征具有更好的泛化性和辨别能力。通过惩罚每个种类的样本和该种类样本中心的偏移，使得同一种类的样本尽量聚合在一起。相对于triplet和contrastive来说，这个目标其实相对‘清晰’， 所以网络收敛的速度甚至比仅仅用softmax更快，而且不需要像前两者那样构造大量的训练对，细节请见论文。</p>
 <h2 id="mxnet构造新operator"><a href="#mxnet构造新operator" class="headerlink" title="mxnet构造新operator"></a>mxnet构造新operator</h2><p>  尽管我是mxnet的粉丝，但是不得不说现在mxnet的文档还是欠缺了一些，尤其文档列出来的操作通常是最常用的，稍微有点深入的时候就需要看代码和issue。所以这里稍微总结一下自己踩坑的过程，给大家做一个参考。</p>
 <p>  目前mxnet有两种构造新operator的方式，一是用提供的python接口，另外就是用mshadow写c++的代码了，我们验证算法有效性当然是首选用python了，所以还是要先看完这个<a href="http://mxnet.readthedocs.io/en/latest/how_to/new_op.html" target="_blank" rel="external">连接</a>。</p>
@@ -402,6 +403,10 @@
           </div>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/10/22/mxnet-mtcnn/" rel="prev" title="mxnet 实现 mtcnn 人脸检测和特征点定位">
+                mxnet 实现 mtcnn 人脸检测和特征点定位 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -492,7 +497,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">2</span>
+              <span class="site-state-item-count">3</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -509,7 +514,7 @@
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">3</span>
+                <span class="site-state-item-count">4</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -711,6 +716,26 @@
   
 
   
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
 
   
 

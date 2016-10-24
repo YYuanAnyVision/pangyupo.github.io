@@ -237,10 +237,10 @@
     
       <div class="tag-cloud">
         <div class="tag-cloud-title">
-            目前共计 3 个标签
+            目前共计 4 个标签
         </div>
         <div class="tag-cloud-tags">
-          <a href="/tags/dl/" style="font-size: 12px; color: #ccc">dl</a> <a href="/tags/mxnet/" style="font-size: 12px; color: #ccc">mxnet</a> <a href="/tags/test/" style="font-size: 12px; color: #ccc">test</a>
+          <a href="/tags/dl/" style="font-size: 30px; color: #111">dl</a> <a href="/tags/face/" style="font-size: 12px; color: #ccc">face</a> <a href="/tags/mxnet/" style="font-size: 30px; color: #111">mxnet</a> <a href="/tags/test/" style="font-size: 12px; color: #ccc">test</a>
         </div>
       </div>
     
@@ -291,7 +291,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">2</span>
+              <span class="site-state-item-count">3</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -308,7 +308,7 @@
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">3</span>
+                <span class="site-state-item-count">4</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -495,6 +495,26 @@
   
 
   
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
 
   
 

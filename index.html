@@ -249,6 +249,151 @@
             
               
                 
+                <a class="post-title-link" href="/2016/10/22/mxnet-mtcnn/" itemprop="url">
+                  mxnet 实现 mtcnn 人脸检测和特征点定位
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-10-22T19:23:37+08:00" content="2016-10-22">
+              2016-10-22
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/study/" itemprop="url" rel="index">
+                    <span itemprop="name">study</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/10/22/mxnet-mtcnn/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/10/22/mxnet-mtcnn/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>  处理人脸的时候，一直都希望有一个比较快而且又准的方法，这次看到mtcnn放出的模型，稍微试了几下感觉效果不错，就把模型转到了mxnet下，语言也换成了python，方便使用，记录一些转换的过程供以后参考。</p>
+<h2 id="1-论文相关"><a href="#1-论文相关" class="headerlink" title="1 论文相关"></a>1 论文相关</h2><p>  作者的<a href="https://github.com/kpzhang93/MTCNN_face_detection_alignment" target="_blank" rel="external">官方实现</a>以及作者的<a href="https://kpzhang93.github.io/" target="_blank" rel="external">官网</a>。</p>
+<ul>
+<li><p>这个方法最大的好处当然是快了(在很准的前提下)，可以对比用mxnet实现的faster rcnn实现的<a href="https://github.com/tornadomeet/mxnet-face" target="_blank" rel="external">人脸检测</a>，速度还是要慢很多的，当然本来faster rcnn就是奔着通用的检测方案去的，用在这里有点大材小用。</p>
+</li>
+<li><p>提速的最大来源还是和cascade一样的思路，用简单的分类器去掉大量的明显非人脸区域，再用逐渐复杂的分类器过滤余下的检测框。不过放弃了rpn对尺度不敏感的性质，也就意味着要生成图像金字塔，这里也是一比不小的开销。</p>
+</li>
+<li><p>只在最后的stage里做landmark的预测，既是节省时间，也是因为前面的人脸框本身就定位不准，那么做landmark噪声太大。</p>
+<p>其它的信息参见论文，没有太多好说的。</p>
+</li>
+</ul>
+<h2 id="2-模型转换"><a href="#2-模型转换" class="headerlink" title="2 模型转换"></a>2 模型转换</h2><p>  看了论文之后感觉还是挺简单的，没有对network做什么hack，应该都是现成的模块可以搞定的事情，中间逻辑也不复杂，没想到还是挺多需要注意的事情的。</p>
+<ul>
+<li><p>都知道caffe因为使用opencv处理图片的缘故，一般训练出来的模型是读取BGR图像的，而mxnet是约定是RGB的。well，这次反过来了。作者由于是提供的matlab的代码，而matlab本身是RGB排列的，我观察到作者没有更换通道，那么这个模型其实是读取RGB的输入了。另一方面，由于skimage的resize速度没有opencv快，我希望使用opencv做image的io和resize，那么处于效率考虑当然最好用BGR输入。所以弄了一圈还是需要交换一次第一层conv的权重通道。</p>
+</li>
+<li><p>好久没用matlab的我，依稀记得matlab是列优先的内存存放。所以我看到作者直接把图片丢进去的时候一阵的莫名其妙，直到看到作者对x,y坐标的交换操作才明白。原来作者为了效率优先，就没有对内存做过多的修改，这样送给caffe相当于是在检测一张转置后的图像(不知道作者是训练的时候就交换了，还是发布模型的时候转置了权重，只是因为使用matlab就需要这么个额外的步骤，我再强烈安利一发mxnet啊)。那numpy以行为主，我们要拿到合理的输出，当然就是转置权重了。不过注意是在最后的x，y层面才转置，channel和num是要维持不动的。</p>
+</li>
+<li><p>经过上面的操作后，我们得到的feature map是转置后的，那么fc的连接也被我们也需要做对应的修改。如果feature map从<br>$$<br>\begin{vmatrix} 0 &amp; 3 \\ 1 &amp; 4 \\ 2 &amp; 5  \end{vmatrix}<br>$$<br>变成了<br>$$<br>\begin{vmatrix}0 &amp; 1 &amp; 2 \\ 3 &amp; 4 &amp;5  \end{vmatrix}<br>$$<br>​</p>
+<p>fc不考虑它们的摆放关系，所以第一个变成了012345，而第二个的内存顺序是 031425，所以我们想要拿到同样的输出的时候，要把fc的权重也做这样的修改。其实也就是reshape回输出时候的<code>(c, h, w)</code>的shape，然后对后面两个维度转置一下，再flatten回来就好了。</p>
+<p>经过上面这上个操作，最后检查一下。把x输入到caffe的model，和把x交换通道并且转置后输入到我们转换的mxnet的model，输出是不是一致的。其它一些需要注意的地方都是一些比较细节的玩意，好像matlab里面的1:4是包括4的，从1开始啊。总之太多约定上不一样的，小心一点就好。另外吐槽一下numpy的(n,)和(n,1)都不好用。</p>
+</li>
+</ul>
+<h2 id="结果"><a href="#结果" class="headerlink" title="结果"></a>结果</h2><p><img src="http://7xsc78.com1.z0.glb.clouddn.com/face_mtcnn.png" alt="big4"></p>
+<p>我大概检查了一下输出，和原版输出应该是差不多的撒，不过有时候浮点到整形之类的有一些些出入。</p>
+<p>不过去掉matlab和caffe的依赖，可以用python和mxnet来做，实用性还是方便很多的，欢迎大家使用嘿嘿，有问题欢迎留言。</p>
+<p><a href="https://github.com/pangyupo/mxnet_mtcnn_face_detection" target="_blank" rel="external">全部代码</a></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="//schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2016/10/16/mxnet-center-loss/" itemprop="url">
                   mxnet_center_loss
                 </a>
@@ -320,6 +465,7 @@
         
           
             <h1 id="使用mxnet构造center-loss-operator-python版本"><a href="#使用mxnet构造center-loss-operator-python版本" class="headerlink" title="使用mxnet构造center loss operator(python版本)"></a>使用mxnet构造center loss operator(python版本)</h1><h2 id="论文介绍"><a href="#论文介绍" class="headerlink" title="论文介绍"></a>论文介绍</h2><p>  相关论文见<a href="http://ydwen.github.io/papers/WenECCV16.pdf" target="_blank" rel="external"><em>《A Discriminative Feature Learning Approach for Deep Face Recognition》</em>,<em>Yandong Wen, Kaipeng Zhang, Zhifeng Li, and Yu Qiao, Shenzhen</em> </a></p>
+<p>  更新作者官方放出的<a href="https://github.com/ydwen/caffe-face" target="_blank" rel="external">代码</a>，基于caffe</p>
 <p>  作者的出发点和contrastive loss一样，在配合softmax适用的时候，希望使学习到的特征具有更好的泛化性和辨别能力。通过惩罚每个种类的样本和该种类样本中心的偏移，使得同一种类的样本尽量聚合在一起。相对于triplet和contrastive来说，这个目标其实相对‘清晰’， 所以网络收敛的速度甚至比仅仅用softmax更快，而且不需要像前两者那样构造大量的训练对，细节请见论文。</p>
 <h2 id="mxnet构造新operator"><a href="#mxnet构造新operator" class="headerlink" title="mxnet构造新operator"></a>mxnet构造新operator</h2><p>  尽管我是mxnet的粉丝，但是不得不说现在mxnet的文档还是欠缺了一些，尤其文档列出来的操作通常是最常用的，稍微有点深入的时候就需要看代码和issue。所以这里稍微总结一下自己踩坑的过程，给大家做一个参考。</p>
 <p>  目前mxnet有两种构造新operator的方式，一是用提供的python接口，另外就是用mshadow写c++的代码了，我们验证算法有效性当然是首选用python了，所以还是要先看完这个<a href="http://mxnet.readthedocs.io/en/latest/how_to/new_op.html" target="_blank" rel="external">连接</a>。</p>
@@ -559,7 +705,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">2</span>
+              <span class="site-state-item-count">3</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -576,7 +722,7 @@
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">3</span>
+                <span class="site-state-item-count">4</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -763,6 +909,26 @@
   
 
   
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
 
   
 
